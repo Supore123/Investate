@@ -3,22 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Property Swipe App</title>
+  <title>Property Finder</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: #f0f2f5;
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Main Menu Screen */
+    .main-menu {
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .app-logo {
+      font-size: 60px;
+      margin-bottom: 10px;
+    }
+
+    .app-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .app-subtitle {
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .menu-button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 16px;
+      padding: 30px 20px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: center;
+    }
+
+    .menu-button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .menu-button:active {
+      transform: translateY(-2px);
+    }
+
+    .menu-button .icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .menu-button .label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Property Swipe Screen */
+    .swipe-screen {
+      padding: 20px;
+      min-height: 600px;
     }
 
     .card-container {
       position: relative;
-      width: 320px;
+      width: 100%;
       height: 480px;
+      margin-bottom: 20px;
     }
 
     .card {
@@ -78,107 +176,414 @@
       opacity: 1;
       transform: scale(1);
     }
+
+    /* Search Screen */
+    .search-screen {
+      padding: 30px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .property-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .property-item {
+      display: flex;
+      background: #f8f9fa;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .property-item:hover {
+      transform: scale(1.02);
+    }
+
+    .property-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .property-item .details {
+      padding: 15px;
+      flex: 1;
+    }
+
+    .property-item h4 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+    }
+
+    .property-item p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Favorites Screen */
+    .favorites-screen {
+      padding: 30px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .empty-state .icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+
+    /* Profile Screen */
+    .profile-screen {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+    }
+
+    .profile-info {
+      margin-bottom: 30px;
+    }
+
+    .profile-info h2 {
+      margin: 0 0 5px 0;
+      font-size: 24px;
+    }
+
+    .profile-info p {
+      color: #666;
+      margin: 0;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat .number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+      display: block;
+    }
+
+    .stat .label {
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* Back Button */
+    .back-button {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+
+    .back-button:hover {
+      background: #e0e0e0;
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .screen-header h2 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+    }
   </style>
 </head>
 <body>
-  <div class="card-container" id="card-container"></div>
+  <div class="app-container">
+    
+    <!-- Main Menu Screen -->
+    <div class="screen active" id="main-menu">
+      <div class="main-menu">
+        <div class="app-logo">🏠</div>
+        <h1 class="app-title">Property Finder</h1>
+        <p class="app-subtitle">Find your dream home</p>
+        
+        <div class="menu-grid">
+          <button class="menu-button" onclick="showScreen('swipe')">
+            <span class="icon">👆</span>
+            <span class="label">Swipe</span>
+          </button>
+          
+          <button class="menu-button" onclick="showScreen('search')">
+            <span class="icon">🔍</span>
+            <span class="label">Search</span>
+          </button>
+          
+          <button class="menu-button" onclick="showScreen('favorites')">
+            <span class="icon">❤️</span>
+            <span class="label">Favorites</span>
+          </button>
+          
+          <button class="menu-button" onclick="showScreen('profile')">
+            <span class="icon">👤</span>
+            <span class="label">Profile</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Swipe Screen -->
+    <div class="screen" id="swipe">
+      <div class="swipe-screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showScreen('main-menu')">←</button>
+          <h2>Swipe Properties</h2>
+          <div style="width: 30px;"></div>
+        </div>
+        <div class="card-container" id="card-container"></div>
+      </div>
+    </div>
+
+    <!-- Search Screen -->
+    <div class="screen" id="search">
+      <div class="search-screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showScreen('main-menu')">←</button>
+          <h2>Search</h2>
+          <div style="width: 30px;"></div>
+        </div>
+        <input type="text" class="search-box" placeholder="Search location, price..." />
+        <div class="property-list">
+          <div class="property-item">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c" alt="Property" />
+            <div class="details">
+              <h4>Modern Apartment</h4>
+              <p>London • £320,000</p>
+            </div>
+          </div>
+          <div class="property-item">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Property" />
+            <div class="details">
+              <h4>Cottage</h4>
+              <p>Oxford • £450,000</p>
+            </div>
+          </div>
+          <div class="property-item">
+            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be" alt="Property" />
+            <div class="details">
+              <h4>City Flat</h4>
+              <p>Manchester • £275,000</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorites Screen -->
+    <div class="screen" id="favorites">
+      <div class="favorites-screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showScreen('main-menu')">←</button>
+          <h2>Favorites</h2>
+          <div style="width: 30px;"></div>
+        </div>
+        <div class="empty-state">
+          <div class="icon">💜</div>
+          <h3>No favorites yet</h3>
+          <p>Start swiping to save properties you love!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div class="screen" id="profile">
+      <div class="profile-screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showScreen('main-menu')">←</button>
+          <h2>Profile</h2>
+          <div style="width: 30px;"></div>
+        </div>
+        <div class="profile-avatar">👤</div>
+        <div class="profile-info">
+          <h2>Property Hunter</h2>
+          <p>Member since 2025</p>
+        </div>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="number">42</span>
+            <span class="label">Viewed</span>
+          </div>
+          <div class="stat">
+            <span class="number">12</span>
+            <span class="label">Liked</span>
+          </div>
+          <div class="stat">
+            <span class="number">3</span>
+            <span class="label">Saved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <script>
-    const properties = [
-      {
-        title: "Modern Apartment in London",
-        price: "£320,000",
-        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
-      },
-      {
-        title: "Cottage in Oxford",
-        price: "£450,000",
-        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-      },
-      {
-        title: "Flat in Manchester",
-        price: "£275,000",
-        image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be",
-      },
-      {
-        title: "Luxury Villa in Cambridge",
-        price: "£1,200,000",
-        image: "https://images.unsplash.com/photo-1600585152918-7c31b62f3b58",
-      },
-    ];
-
-    const container = document.getElementById("card-container");
-
-    properties.reverse().forEach((prop) => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="status like">LIKE</div>
-        <div class="status skip">SKIP</div>
-        <img src="${prop.image}" alt="${prop.title}" />
-        <div class="info">
-          <h3>${prop.title}</h3>
-          <p>${prop.price}</p>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-
-    const cards = document.querySelectorAll(".card");
-
-    cards.forEach((card) => {
-      let startX = 0,
-        currentX = 0,
-        isDragging = false;
-
-      const likeLabel = card.querySelector(".like");
-      const skipLabel = card.querySelector(".skip");
-
-      const handleMove = (x) => {
-        if (!isDragging) return;
-        currentX = x - startX;
-        card.style.transform = `translateX(${currentX}px) rotate(${currentX / 20}deg)`;
-
-        if (currentX > 80) {
-          likeLabel.classList.add("active");
-          skipLabel.classList.remove("active");
-        } else if (currentX < -80) {
-          skipLabel.classList.add("active");
-          likeLabel.classList.remove("active");
-        } else {
-          likeLabel.classList.remove("active");
-          skipLabel.classList.remove("active");
-        }
-      };
-
-      const endSwipe = () => {
-        isDragging = false;
-        likeLabel.classList.remove("active");
-        skipLabel.classList.remove("active");
-
-        if (Math.abs(currentX) > 120) {
-          card.style.opacity = "0";
-          card.style.transform = `translateX(${currentX > 0 ? 500 : -500}px) rotate(${currentX / 10}deg)`;
-          setTimeout(() => card.remove(), 300);
-        } else {
-          card.style.transform = "";
-        }
-      };
-
-      card.addEventListener("mousedown", (e) => {
-        startX = e.clientX;
-        isDragging = true;
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
       });
-      window.addEventListener("mousemove", (e) => handleMove(e.clientX));
-      window.addEventListener("mouseup", endSwipe);
+      document.getElementById(screenId).classList.add('active');
+      
+      // Initialize swipe cards when entering swipe screen
+      if (screenId === 'swipe' && !document.querySelector('.card')) {
+        initializeSwipeCards();
+      }
+    }
 
-      card.addEventListener("touchstart", (e) => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
+    function initializeSwipeCards() {
+      const properties = [
+        {
+          title: "Modern Apartment in London",
+          price: "£320,000",
+          image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        },
+        {
+          title: "Cottage in Oxford",
+          price: "£450,000",
+          image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+        },
+        {
+          title: "Flat in Manchester",
+          price: "£275,000",
+          image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be",
+        },
+        {
+          title: "Luxury Villa in Cambridge",
+          price: "£1,200,000",
+          image: "https://images.unsplash.com/photo-1600585152918-7c31b62f3b58",
+        },
+      ];
+
+      const container = document.getElementById("card-container");
+      container.innerHTML = '';
+
+      properties.reverse().forEach((prop) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="status like">LIKE</div>
+          <div class="status skip">SKIP</div>
+          <img src="${prop.image}" alt="${prop.title}" />
+          <div class="info">
+            <h3>${prop.title}</h3>
+            <p>${prop.price}</p>
+          </div>
+        `;
+        container.appendChild(card);
       });
-      window.addEventListener("touchmove", (e) => handleMove(e.touches[0].clientX));
-      window.addEventListener("touchend", endSwipe);
-    });
+
+      const cards = document.querySelectorAll(".card");
+
+      cards.forEach((card) => {
+        let startX = 0,
+          currentX = 0,
+          isDragging = false;
+
+        const likeLabel = card.querySelector(".like");
+        const skipLabel = card.querySelector(".skip");
+
+        const handleMove = (x) => {
+          if (!isDragging) return;
+          currentX = x - startX;
+          card.style.transform = `translateX(${currentX}px) rotate(${currentX / 20}deg)`;
+
+          if (currentX > 80) {
+            likeLabel.classList.add("active");
+            skipLabel.classList.remove("active");
+          } else if (currentX < -80) {
+            skipLabel.classList.add("active");
+            likeLabel.classList.remove("active");
+          } else {
+            likeLabel.classList.remove("active");
+            skipLabel.classList.remove("active");
+          }
+        };
+
+        const endSwipe = () => {
+          isDragging = false;
+          likeLabel.classList.remove("active");
+          skipLabel.classList.remove("active");
+
+          if (Math.abs(currentX) > 120) {
+            card.style.opacity = "0";
+            card.style.transform = `translateX(${currentX > 0 ? 500 : -500}px) rotate(${currentX / 10}deg)`;
+            setTimeout(() => card.remove(), 300);
+          } else {
+            card.style.transform = "";
+          }
+        };
+
+        card.addEventListener("mousedown", (e) => {
+          startX = e.clientX;
+          isDragging = true;
+        });
+        window.addEventListener("mousemove", (e) => handleMove(e.clientX));
+        window.addEventListener("mouseup", endSwipe);
+
+        card.addEventListener("touchstart", (e) => {
+          startX = e.touches[0].clientX;
+          isDragging = true;
+        });
+        window.addEventListener("touchmove", (e) => handleMove(e.touches[0].clientX));
+        window.addEventListener("touchend", endSwipe);
+      });
+    }
   </script>
 </body>
 </html>
