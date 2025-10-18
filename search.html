@@ -1,0 +1,22 @@
+<!-- Search Page -->
+<div class="screen" id="search">
+  <div class="main-content">
+    <header class="app-header">
+      <button class="back-button" onclick="showScreen('main-menu')">←</button>
+      <div>
+        <h1 class="app-title">Investate</h1>
+        <p class="app-subtitle">Smart Property Investment</p>
+      </div>
+      <div class="header-spacer"></div>
+    </header>
+    <div class="search-section">
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="Search properties..." oninput="handleSearch(this.value)">
+      </div>
+    </div>
+    <div class="properties-container" id="properties-list">
+      <!-- Properties will be loaded here -->
+    </div>
+  </div>
+</div>
