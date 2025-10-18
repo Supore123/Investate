@@ -335,6 +335,10 @@
       }
     }
 
+      // Store loaded properties and selected property
+      let loadedProperties = [];
+      let selectedProperty = null;
+
     // Function to display properties
     async function displayProperties(searchParams = {}) {
       const container = document.getElementById('properties-list');
@@ -342,51 +346,52 @@
       
       try {
         const properties = await loadProperties(searchParams);
+
+          loadedProperties = properties;
         
         if (properties.length === 0) {
           container.innerHTML = '<div class="error">No properties found</div>';
           return;
         }
 
-        const html = properties.map(property => `
-          <div class="property-card">
-            <div class="property-header">
-              <div class="property-title">${property.address}</div>
-              <div class="property-price">$${property.price.toLocaleString()}</div>
+          const html = properties.map((property, idx) => `
+            <div class="property-card" style="cursor:pointer" onclick="showPropertyAnalytics(${idx})">
+              <div class="property-header">
+                <div class="property-title">${property.address}</div>
+                <div class="property-price">$${property.price.toLocaleString()}</div>
+              </div>
+              <div class="property-details">
+                ${property.city}, ${property.state} • ${property.bedrooms} beds • ${property.bathrooms} baths • ${property.sqft.toLocaleString()} sq.ft
+              </div>
+              <div class="metrics-grid">
+                <div class="metric">
+                  <div class="metric-value ${property.cap_rate >= 8 ? 'positive' : property.cap_rate >= 5 ? 'neutral' : 'negative'}">
+                    ${property.cap_rate}%
+                  </div>
+                  <div class="metric-label">Cap Rate</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value ${property.cash_flow >= 500 ? 'positive' : property.cash_flow >= 0 ? 'neutral' : 'negative'}">
+                    $${property.cash_flow}
+                  </div>
+                  <div class="metric-label">Cash Flow</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value ${property.roi >= 15 ? 'positive' : property.roi >= 8 ? 'neutral' : 'negative'}">
+                    ${property.roi}%
+                  </div>
+                  <div class="metric-label">ROI</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value">
+                    ${property.vacancy_rate}%
+                  </div>
+                  <div class="metric-label">Vacancy</div>
+                </div>
+              </div>
             </div>
-            <div class="property-details">
-              ${property.city}, ${property.state} • ${property.bedrooms} beds • ${property.bathrooms} baths • ${property.sqft.toLocaleString()} sq.ft
-            </div>
-            <div class="metrics-grid">
-              <div class="metric">
-                <div class="metric-value ${property.cap_rate >= 8 ? 'positive' : property.cap_rate >= 5 ? 'neutral' : 'negative'}">
-                  ${property.cap_rate}%
-                </div>
-                <div class="metric-label">Cap Rate</div>
-              </div>
-              <div class="metric">
-                <div class="metric-value ${property.cash_flow >= 500 ? 'positive' : property.cash_flow >= 0 ? 'neutral' : 'negative'}">
-                  $${property.cash_flow}
-                </div>
-                <div class="metric-label">Cash Flow</div>
-              </div>
-              <div class="metric">
-                <div class="metric-value ${property.roi >= 15 ? 'positive' : property.roi >= 8 ? 'neutral' : 'negative'}">
-                  ${property.roi}%
-                </div>
-                <div class="metric-label">ROI</div>
-              </div>
-              <div class="metric">
-                <div class="metric-value">
-                  ${property.vacancy_rate}%
-                </div>
-                <div class="metric-label">Vacancy</div>
-              </div>
-            </div>
-          </div>
-        `).join('');
-
-        container.innerHTML = html;
+          `).join('');
+          container.innerHTML = html;
       } catch (error) {
         container.innerHTML = `<div class="error">Error loading properties: ${error.message}</div>`;
       }
@@ -415,8 +420,72 @@
           // Load properties when entering search screen
           displayProperties();
         }
+          if (screenId === 'property-analytics') {
+            renderPropertyAnalytics();
+          }
       }
     }
+
+      // Show analytics for a selected property
+      function showPropertyAnalytics(idx) {
+        selectedProperty = loadedProperties[idx];
+        showScreen('property-analytics');
+      }
+
+      // Render analytics for selected property
+      function renderPropertyAnalytics() {
+        const property = selectedProperty;
+        if (!property) return;
+        const container = document.getElementById('property-analytics-content');
+        container.innerHTML = `
+          <header class="app-header">
+            <button class="back-button" onclick="showScreen('search')">←</button>
+            <div>
+              <h1 class="app-title">${property.address}</h1>
+              <p class="app-subtitle">${property.city}, ${property.state}</p>
+            </div>
+            <div class="header-spacer"></div>
+          </header>
+          <div style="padding:20px;">
+            <div style="margin-bottom:20px;">
+              <strong>Price:</strong> $${property.price.toLocaleString()}<br>
+              <strong>Bedrooms:</strong> ${property.bedrooms} | <strong>Bathrooms:</strong> ${property.bathrooms} | <strong>Sqft:</strong> ${property.sqft.toLocaleString()}<br>
+              <strong>Cap Rate:</strong> ${property.cap_rate}% | <strong>Cash Flow:</strong> $${property.cash_flow} | <strong>ROI:</strong> ${property.roi}% | <strong>Vacancy:</strong> ${property.vacancy_rate}%
+            </div>
+            <div>
+              <canvas id="propertyAnalyticsChart" height="180"></canvas>
+            </div>
+          </div>
+        `;
+        setTimeout(() => drawPropertyAnalyticsChart(property), 100);
+      }
+
+      // Draw chart for selected property
+      function drawPropertyAnalyticsChart(property) {
+        const ctx = document.getElementById('propertyAnalyticsChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Cap Rate', 'Cash Flow', 'ROI', 'Vacancy'],
+            datasets: [{
+              label: 'Investment Metrics',
+              data: [property.cap_rate, property.cash_flow, property.roi, property.vacancy_rate],
+              backgroundColor: [
+                '#4CAF50', '#FFA000', '#FF385C', '#F44336'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
 
     // Load properties when the page loads
     window.addEventListener('load', () => {
@@ -424,5 +493,13 @@
       showScreen('main-menu');
     });
   </script>
+  </body>
+
+  <!-- Property Analytics Screen -->
+  <div class="screen" id="property-analytics">
+    <div class="main-content" id="property-analytics-content">
+      <!-- Analytics will be rendered here -->
+    </div>
+  </div>
 </body>
 </html>
