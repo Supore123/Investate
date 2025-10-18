@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Property Swipe App</title>
+  <style>
+    body {
+      background: #f0f2f5;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .card-container {
+      position: relative;
+      width: 320px;
+      height: 480px;
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      cursor: grab;
+      transition: transform 0.3s ease-out, opacity 0.3s;
+    }
+
+    .card img {
+      width: 100%;
+      height: 70%;
+      object-fit: cover;
+    }
+
+    .card .info {
+      padding: 16px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 4px 0 0;
+      color: #555;
+    }
+
+    .status {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: 0.2s;
+    }
+
+    .status.like {
+      color: #4caf50;
+    }
+
+    .status.skip {
+      color: #f44336;
+      right: 20px;
+      left: auto;
+    }
+
+    .status.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container" id="card-container"></div>
+
+  <script>
+    const properties = [
+      {
+        title: "Modern Apartment in London",
+        price: "£320,000",
+        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+      },
+      {
+        title: "Cottage in Oxford",
+        price: "£450,000",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+      },
+      {
+        title: "Flat in Manchester",
+        price: "£275,000",
+        image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be",
+      },
+      {
+        title: "Luxury Villa in Cambridge",
+        price: "£1,200,000",
+        image: "https://images.unsplash.com/photo-1600585152918-7c31b62f3b58",
+      },
+    ];
+
+    const container = document.getElementById("card-container");
+
+    properties.reverse().forEach((prop) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="status like">LIKE</div>
+        <div class="status skip">SKIP</div>
+        <img src="${prop.image}" alt="${prop.title}" />
+        <div class="info">
+          <h3>${prop.title}</h3>
+          <p>${prop.price}</p>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach((card) => {
+      let startX = 0,
+        currentX = 0,
+        isDragging = false;
+
+      const likeLabel = card.querySelector(".like");
+      const skipLabel = card.querySelector(".skip");
+
+      const handleMove = (x) => {
+        if (!isDragging) return;
+        currentX = x - startX;
+        card.style.transform = `translateX(${currentX}px) rotate(${currentX / 20}deg)`;
+
+        if (currentX > 80) {
+          likeLabel.classList.add("active");
+          skipLabel.classList.remove("active");
+        } else if (currentX < -80) {
+          skipLabel.classList.add("active");
+          likeLabel.classList.remove("active");
+        } else {
+          likeLabel.classList.remove("active");
+          skipLabel.classList.remove("active");
+        }
+      };
+
+      const endSwipe = () => {
+        isDragging = false;
+        likeLabel.classList.remove("active");
+        skipLabel.classList.remove("active");
+
+        if (Math.abs(currentX) > 120) {
+          card.style.opacity = "0";
+          card.style.transform = `translateX(${currentX > 0 ? 500 : -500}px) rotate(${currentX / 10}deg)`;
+          setTimeout(() => card.remove(), 300);
+        } else {
+          card.style.transform = "";
+        }
+      };
+
+      card.addEventListener("mousedown", (e) => {
+        startX = e.clientX;
+        isDragging = true;
+      });
+      window.addEventListener("mousemove", (e) => handleMove(e.clientX));
+      window.addEventListener("mouseup", endSwipe);
+
+      card.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+      });
+      window.addEventListener("touchmove", (e) => handleMove(e.touches[0].clientX));
+      window.addEventListener("touchend", endSwipe);
+    });
+  </script>
+</body>
+</html>
