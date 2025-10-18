@@ -1,0 +1,63 @@
+:root{
+  --device-width: 390px;
+  --device-height: 844px;
+  --device-bg: #0f1724;
+  --panel-bg: #ffffff;
+  --accent: #ff385c;
+  --muted: #6b7280;
+}
+
+/* Page background: dim to simulate device on a table */
+body {
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.6) 70%), var(--device-bg) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Center the device */
+.app-container {
+  width: var(--device-width) !important;
+  height: calc(var(--device-height) - 40px) !important;
+  border-radius: 48px !important;
+  margin: 40px auto !important;
+  box-shadow: 0 40px 80px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  overflow: hidden !important;
+  border: 12px solid rgba(0,0,0,0.45);
+  background: linear-gradient(180deg,#fff,#fbfbfc) !important;
+}
+
+/* Notch / status bar area */
+.app-header {
+  height: 84px;
+  padding: 18px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px;
+  box-shadow: none !important;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.app-logo { font-size: 36px !important; margin: 0; }
+.menu-grid { gap: 14px; display:grid; grid-template-columns: repeat(2,1fr); }
+.menu-button{ border-radius: 14px; padding: 14px; background: #fff; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 6px 18px rgba(2,6,23,0.06); }
+.menu-button:hover{ transform: translateY(-3px); }
+.menu-label{ display:block; margin-top:8px; color:var(--accent); font-weight:700; }
+
+.search-section{ padding: 14px !important; }
+.search-bar{ padding: 10px 12px !important; border-radius: 12px; }
+.properties-container{ padding: 12px !important; }
+.property-card{ border-radius: 12px !important; padding: 14px !important; }
+
+/* iOS-like typography */
+body, input, button, select { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important; }
+
+/* bottom home bar */
+.home-indicator{ height: 5px; width: 134px; background: rgba(0,0,0,0.12); border-radius: 999px; margin: 14px auto 8px auto; }
+
+/* make charts and containers look native */
+.analytics-card{ border-radius: 12px !important; padding: 12px !important; }
+
+/* responsive fallback for desktop - keep centered */
+@media (min-width: 900px){
+  body { display:flex; align-items:center; justify-content:center; }
+}
