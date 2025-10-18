@@ -1,6 +1,12 @@
+
 <!-- Analytics Page -->
+
 <div class="screen" id="analytics">
   <div class="main-content">
+    <div style="width:100%;text-align:center;margin-top:30px;">
+      <span class="app-logo" style="font-size:60px;">🏠</span>
+      <h1 class="app-title">Investate</h1>
+    </div>
     <header class="app-header">
       <button class="back-button" onclick="showScreen('main-menu')">←</button>
       <div>
@@ -11,7 +17,35 @@
     </header>
     <div class="analytics-container">
       <div class="analytics-grid">
-        <!-- Analytics cards and charts will be loaded here -->
+        <div class="analytics-card">
+          <h3>Portfolio Overview</h3>
+          <div class="summary-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total Properties</span>
+              <span class="stat-value">15</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Avg. ROI</span>
+              <span class="stat-value">12.5%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Investment</span>
+              <span class="stat-value">$5,250,000</span>
+            </div>
+          </div>
+        </div>
+        <div class="analytics-card">
+          <h3>ROI Distribution</h3>
+          <div class="chart-container">
+            <div style="height:120px;display:flex;align-items:center;justify-content:center;color:#aaa;">[Chart Placeholder]</div>
+          </div>
+        </div>
+        <div class="analytics-card">
+          <h3>Market Trends</h3>
+          <div class="chart-container">
+            <div style="height:120px;display:flex;align-items:center;justify-content:center;color:#aaa;">[Chart Placeholder]</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

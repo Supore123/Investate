@@ -1,6 +1,12 @@
+
 <!-- Favorites Page -->
+
 <div class="screen" id="favorites">
   <div class="main-content">
+    <div style="width:100%;text-align:center;margin-top:30px;">
+      <span class="app-logo" style="font-size:60px;">🏠</span>
+      <h1 class="app-title">Investate</h1>
+    </div>
     <header class="app-header">
       <button class="back-button" onclick="showScreen('main-menu')">←</button>
       <div>
@@ -11,7 +17,34 @@
     </header>
     <div class="favorites-container">
       <div class="favorites-grid" id="favorites-list">
-        <!-- Favorites will be loaded here -->
+        <div class="property-card">
+          <div class="property-header">
+            <div class="property-title">Example Property</div>
+            <div class="property-price">$500,000</div>
+          </div>
+          <div class="property-details">
+            Example City, ST • 3 beds • 2 baths • 2,000 sq.ft
+          </div>
+          <div class="metrics-grid">
+            <div class="metric">
+              <div class="metric-value positive">8.5%</div>
+              <div class="metric-label">Cap Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value positive">$800</div>
+              <div class="metric-label">Cash Flow</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value positive">15%</div>
+              <div class="metric-label">ROI</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">5%</div>
+              <div class="metric-label">Vacancy</div>
+            </div>
+          </div>
+          <p class="error" style="margin-top: 15px;">Add properties to your favorites to see them here!</p>
+        </div>
       </div>
     </div>
   </div>

@@ -1,6 +1,12 @@
+
 <!-- Settings Page -->
+
 <div class="screen" id="settings">
   <div class="main-content">
+    <div style="width:100%;text-align:center;margin-top:30px;">
+      <span class="app-logo" style="font-size:60px;">🏠</span>
+      <h1 class="app-title">Investate</h1>
+    </div>
     <header class="app-header">
       <button class="back-button" onclick="showScreen('main-menu')">←</button>
       <div>
@@ -10,7 +16,46 @@
       <div class="header-spacer"></div>
     </header>
     <div class="settings-container">
-      <!-- Settings groups and controls will be loaded here -->
+      <div class="settings-group">
+        <h3>Investment Preferences</h3>
+        <div class="setting-item">
+          <label>Minimum ROI Target</label>
+          <input type="range" min="0" max="30" value="15">
+          <span class="setting-value">15%</span>
+        </div>
+        <div class="setting-item">
+          <label>Investment Budget</label>
+          <input type="number" placeholder="Enter maximum budget">
+        </div>
+      </div>
+      <div class="settings-group">
+        <h3>Display Settings</h3>
+        <div class="setting-item">
+          <label>Dark Mode</label>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>Currency Display</label>
+          <select>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings-group">
+        <h3>Notifications</h3>
+        <div class="setting-item">
+          <label>Property Alerts</label>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 </div>
